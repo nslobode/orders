@@ -1,5 +1,6 @@
 package org.parser.orders.processor.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,9 @@ public class JsonProcessor implements Processor {
 
 	private List<Order> parseToObjects(Map<byte[], String> files) {
 		AtomicLong counter = new AtomicLong(1L);
-		return files.entrySet().stream().parallel().map(this::readValue).flatMap(List::stream)
+		return files.entrySet().stream().parallel()
+				.map(this::readValue)
+				.flatMap(List::stream)
 				.map(order -> {
 					order.setLine(counter.getAndIncrement());
 					return order;
@@ -51,7 +54,9 @@ public class JsonProcessor implements Processor {
 		List<Order> orders = null;
 		try {
 			orders = jsonMapper.readValue(pair.getKey(), orderList);
-		} catch (IOException e) {
+		} catch (JsonParseException parseEx){
+			log.error("Couldn't parse json object {}, malformed file", () -> new String(pair.getKey()));
+		} catch (IOException ioEx) {
 			log.error("Couldn't read json object {}", () -> new String(pair.getKey()));
 		}
 		Objects.requireNonNull(orders, "Parsing failed").forEach(order -> order.setFilename(pair.getValue()));

@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.parser.orders.model.Order;
 import org.springframework.util.StringUtils;
-import static org.parser.orders.utils.ErrorMessages.ERROR;
-import static org.parser.orders.utils.ErrorMessages.FIELD_IS_MISSING;
 
 import java.io.IOException;
+
+import static org.parser.orders.utils.ErrorMessages.ERROR;
+import static org.parser.orders.utils.ErrorMessages.FIELD_IS_MISSING;
 
 public class OrderDeserializer extends StdDeserializer<Order> {
 

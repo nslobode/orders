@@ -1,9 +1,11 @@
 package org.parser.orders.dataprovider;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,22 +16,31 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Log4j2
 @Component("dataProvider")
 @Scope("prototype")
+@Setter
 public class DataProvider {
 
+	@Value("${source.directory}")
+	private String dirName;
+
 	public Map<byte[], String> readBytesWithNames(Stream<String> filenames) {
-		return filenames.parallel().map(Paths::get)
-				.collect(Collectors.toMap(this::readAllBytes, Path::toString));
+		Function<Path, String> getFileName = path -> path.getFileName().toString();
+		return filenames.parallel()
+				.map(filename -> Paths.get(dirName, filename))
+				.collect(Collectors.toMap(this::readAllBytes, getFileName));
 	}
 
 	public Map<List<CSVRecord>, String> readLinesWithNames(Stream<String> filenames) {
-		return filenames.parallel().map(Paths::get)
-				.collect(Collectors.toMap(this::readCsvRecord, Path::toString));
+		Function<Path, String> getFileName = path -> path.getFileName().toString();
+		return filenames.parallel()
+				.map(filename -> Paths.get(dirName, filename))
+				.collect(Collectors.toMap(this::readCsvRecord, getFileName));
 	}
 
 	private byte[] readAllBytes(Path path) {
@@ -52,4 +63,3 @@ public class DataProvider {
 		return records;
 	}
 }
-
