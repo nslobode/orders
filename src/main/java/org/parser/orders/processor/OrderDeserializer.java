@@ -13,6 +13,9 @@ import java.io.IOException;
 import static org.parser.orders.utils.ErrorMessages.ERROR;
 import static org.parser.orders.utils.ErrorMessages.FIELD_IS_MISSING;
 
+/**
+ * Custom deserializer needed in order to combine errors in a separate field
+ */
 public class OrderDeserializer extends StdDeserializer<Order> {
 
 	public OrderDeserializer(Class<?> vc) {
@@ -30,6 +33,13 @@ public class OrderDeserializer extends StdDeserializer<Order> {
 		return parseOrder(node);
 	}
 
+	/**
+	 * Parses json, leaves default values for erroneous fields and combines
+	 * messages in separate field
+	 *
+	 * @param node - incoming json node to be parsed
+	 * @return parsed {@link org.parser.orders.model.Order} object
+	 */
 	private Order parseOrder(JsonNode node) {
 		Order order = new Order();
 		StringBuilder errors = new StringBuilder();

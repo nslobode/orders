@@ -20,15 +20,27 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Data Provider class
+ * prepares data for dedicated parsers
+ */
 @Log4j2
 @Component("dataProvider")
 @Scope("prototype")
 @Setter
 public class DataProvider {
 
+	/**
+	 * Directory in which files to be parsed are located
+	 */
 	@Value("${source.directory}")
 	private String dirName;
 
+	/**
+	 * Data preparation for json processor
+	 * @param filenames - stream of json files filenames
+	 * @return map of bytes with filenames as values
+	 */
 	public Map<byte[], String> readBytesWithNames(Stream<String> filenames) {
 		Function<Path, String> getFileName = path -> path.getFileName().toString();
 		return filenames.parallel()
@@ -36,6 +48,11 @@ public class DataProvider {
 				.collect(Collectors.toMap(this::readAllBytes, getFileName));
 	}
 
+	/**
+	 * Data preparation for csv processor
+	 * @param filenames - stream of csv files filenames
+	 * @return map of lists of csv lines with filenames as values
+	 */
 	public Map<List<CSVRecord>, String> readLinesWithNames(Stream<String> filenames) {
 		Function<Path, String> getFileName = path -> path.getFileName().toString();
 		return filenames.parallel()

@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringBeans {
 
+	/**
+	 * Construct custom jsonMapper bean with {@link org.parser.orders.processor.OrderDeserializer}
+	 * @return jsonMapper
+	 */
 	@Bean
 	public ObjectMapper jsonMapper() {
 		ObjectMapper mapper = new ObjectMapper();

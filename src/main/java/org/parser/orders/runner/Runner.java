@@ -15,15 +15,30 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
+/**
+ * Purpose of this bean is to run main logic of thr application -
+ * processing of given input types
+ */
 @Log4j2
 @AllArgsConstructor
 @Component
 public class Runner {
 
+	/**
+	 * Json receiver and parser
+	 * {@link org.parser.orders.processor.impl.JsonProcessor}
+	 */
 	private Processor jsonProcessor;
 
+	/**
+	 * CSV receiver and parser
+	 * {@link org.parser.orders.processor.impl.CsvProcessor}
+	 */
 	private Processor csvProcessor;
 
+	/**
+	 * Standard mapper for stdout
+	 */
 	private ObjectMapper mapper;
 
 	public void runProcessing(String[] args) {
