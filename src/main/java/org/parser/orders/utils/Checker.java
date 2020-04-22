@@ -2,6 +2,9 @@ package org.parser.orders.utils;
 
 import java.util.Arrays;
 
+/**
+ * Utility class for validation of incoming formats
+ */
 public class Checker {
 
 	private Checker() {
